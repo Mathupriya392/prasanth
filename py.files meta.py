@@ -1,85 +1,77 @@
-class Task  
-{
-  name: string;
-  description: string;
-  dueDate: Date;
-  priority: string;
+import datetime
 
-  constructor(name: string, description: string, dueDate: string, priority: string) {
-    this.name = name;
-    this.description = description;
-    this.dueDate = new Date(dueDate);
-    this.priority = priority;
-  }
+class Task:
+    def __init__(self, name, description, due_date, priority):
+        self.name = name
+        self.description = description
+        self.due_date = due_date
+        self.priority = priority
 
-  toString(): string {
-    return `${this.name}: ${this.description} (Due: ${this.dueDate.toDateString()}, Priority: ${this.priority})`;
-  }
-}class TaskScheduler {
-  tasks: Task[];
+    def __str__(self):
+        return f"{self.name}: {self.description} (Due: {self.due_date}, Priority: {self.priority})"
 
-  constructor() {
-    this.tasks = [];
-  }
+class TaskScheduler:
+    def __init__(self):
+        self.tasks = []
 
-  addTask(task: Task): void {
-    this.tasks.push(task);
-  }
-  
-  viewTasks(): void {
-    for (const task of this.tasks) {
-      console.log(task.toString());
-    }
-  }
+    def add_task(self, task):
+        self.tasks.append(task)
 
-  scheduleTasks(): void {
-    this.tasks.sort((a, b) => {
-      if (a.priority === b.priority) {
-        return a.dueDate.getTime() - b.dueDate.getTime();
-      }
-      return this.getPriorityValue(b.priority) - this.getPriorityValue(a.priority);
-    });
-  }
+    def view_tasks(self):
+        for i, task in enumerate(self.tasks, start=1):
+            print(f"{i}. {task}")
 
-  private getPriorityValue(priority: string): number {
-    switch (priority.toLowerCase()) {
-      case 'high':
-        return 3;
-      case 'medium':
-        return 2;
-      case 'low':
-        return 1;
-      default:
-        return 0;
-    }
-  }
-}function main(): void {
-  const scheduler = new TaskScheduler();
-  while (true) {
-    console.log("1. Add Task");
-    console.log("2. View Tasks");
-    console.log("3. Schedule Tasks");
-    console.log("4. Quit");
-    const choice = prompt("Enter your choice: ");
-    if (choice === "1") {
-      const name = prompt("Enter task name: ");
-      const description = prompt("Enter task description: ");
-      const dueDate = prompt("Enter task due date (YYYY-MM-DD): ");
-      const priority = prompt("Enter task priority (High/Medium/Low): ");
-      const task = new Task(name, description, dueDate, priority);
-      scheduler.addTask(task);
-    } else if (choice === "2") {
-      scheduler.viewTasks();
-    } else if (choice === "3") {
-      scheduler.scheduleTasks();
-      scheduler.viewTasks();
-    } else if (choice === "4") {
-      break;
-    } else {
-      console.log("Invalid choice. Please try again.");
-    }
-  }
-}
+    def schedule_tasks(self):
+        self.tasks.sort(key=lambda x: x.due_date)
+        self.tasks.sort(key=lambda x: x.priority, reverse=True)
 
-main();
+    def delete_task(self, task_number):
+        try:
+            task_choice = int(task_choice)
+            if task_choice <= len(self.tasks):
+                del self.tasks[task_choice - 1]
+                print("Task deleted successfully!")
+            else:
+                print("Invalid task number!")
+        except ValueError:
+            print("Invalid task number!")
 
+    def resolve_dependencies(self):
+        # Resolve task dependencies
+        pass
+
+def main():
+    scheduler = TaskScheduler()
+    while True:
+        print("1. Add Task")
+        print("2. View Tasks")
+        print("3. Schedule Tasks")
+        print("4. Delete Task")
+        print("5. Resolve Dependencies")
+        print("6. Quit")
+        choice = input("Enter your choice: ")
+        if choice == "1":
+            name = input("Enter task name: ")
+            description = input("Enter task description: ")
+            due_date = input("Enter task due date: ")
+            priority = input("Enter task priority (High/Medium/Low): ")
+            task = Task(name, description, due_date, priority)
+            scheduler.add_task(task)
+        elif choice == "2":
+            scheduler.view_tasks()
+        elif choice == "3":
+            scheduler.schedule_tasks()
+            scheduler.view_tasks()
+        elif choice == "4":
+            scheduler.view_tasks()
+            task_number = input("Enter the task number to delete: ")
+            scheduler.delete_task(task_number)
+        elif choice == "5":
+            scheduler.resolve_dependencies()
+        elif choice == "6":
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
